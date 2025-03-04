@@ -37,7 +37,7 @@ export default function HouseControls({ houses, setHouses }) {
   };
 
   return (
-    <div className="w-1/4 bg-gray-100 p-4">
+    <div className="w-1/4 bg-gray-100 p-4 max-h-screen overflow-auto">
       <h2 className="text-lg font-bold text-black">Houses List</h2>
       {houses.map((house) => (
         <div

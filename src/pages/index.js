@@ -11,9 +11,7 @@ export default function Home() {
   return (
     <div className="flex h-screen">
       <HouseControls houses={houses} setHouses={setHouses} />
-      <div className="flex-1 flex flex-col items-center">
-        <CityCanvas houses={houses} />
-      </div>
+      <CityCanvas houses={houses} />
     </div>
   );
 }
