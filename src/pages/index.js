@@ -1,5 +1,6 @@
 import { useState } from "react";
 import HouseControls from "@/components/HouseControls";
+import CityCanvas from "@/components/CityCanvas";
 
 export default function Home() {
   const [houses, setHouses] = useState([
@@ -10,6 +11,9 @@ export default function Home() {
   return (
     <div className="flex h-screen">
       <HouseControls houses={houses} setHouses={setHouses} />
+      <div className="flex-1 flex flex-col items-center">
+        <CityCanvas houses={houses} />
+      </div>
     </div>
   );
 }
