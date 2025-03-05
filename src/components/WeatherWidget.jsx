@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import axios from "axios";
 
 export default function WeatherWidget() {
@@ -9,25 +9,27 @@ export default function WeatherWidget() {
   });
   const [city, setCity] = useState("New York");
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
-
-        const response = await axios.get(url);
-        setWeather({
-          temp: Math.round(response.data.main.temp),
-          condition: response.data.weather[0].main,
-          icon: response.data.weather[0].icon,
-        });
-      } catch (error) {
-        console.error("Failed to fetch weather:", error);
-      }
-    };
-
-    fetchWeather();
+  const apiUrl = useMemo(() => {
+    const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+    return `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
   }, [city]);
+
+  const fetchWeather = useCallback(async () => {
+    try {
+      const response = await axios.get(apiUrl);
+      setWeather({
+        temp: Math.round(response.data.main.temp),
+        condition: response.data.weather[0].main,
+        icon: response.data.weather[0].icon,
+      });
+    } catch (error) {
+      console.error("Failed to fetch weather:", error);
+    }
+  }, [apiUrl]);
+
+  useEffect(() => {
+    fetchWeather();
+  }, [fetchWeather]);
 
   return (
     <div className="p-4 bg-blue-500 text-white text-center rounded-md">

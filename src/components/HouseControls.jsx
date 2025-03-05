@@ -1,45 +1,53 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 export default function HouseControls({ houses, setHouses }) {
   const [newHouseId, setNewHouseId] = useState(houses.length + 1);
 
-  const updateHouse = (id, key, value) => {
-    setHouses((prev) =>
-      prev.map((house) =>
-        house.id === id ? { ...house, [key]: value } : house
-      )
-    );
-  };
+  const updateHouse = useCallback(
+    (id, key, value) => {
+      setHouses((prev) =>
+        prev.map((house) =>
+          house.id === id ? { ...house, [key]: value } : house
+        )
+      );
+    },
+    [setHouses]
+  );
 
-  const addHouse = () => {
-    setHouses([
-      ...houses,
+  const addHouse = useCallback(() => {
+    setHouses((prev) => [
+      ...prev,
       {
         id: newHouseId,
         name: `House ${newHouseId}`,
         floors: 3,
         color: "#808080",
-      }, // Default to gray
+      },
     ]);
-    setNewHouseId(newHouseId + 1);
-  };
+    setNewHouseId((prev) => prev + 1);
+  }, [setHouses, newHouseId]);
 
-  const duplicateHouse = (id) => {
-    const houseToCopy = houses.find((house) => house.id === id);
-    if (houseToCopy) {
-      const newHouse = {
-        ...houseToCopy,
-        id: newHouseId,
-        name: `House ${newHouseId}`,
-      };
-      setHouses([...houses, newHouse]);
-      setNewHouseId(newHouseId + 1);
-    }
-  };
+  const duplicateHouse = useCallback(
+    (id) => {
+      setHouses((prev) => {
+        const houseToCopy = prev.find((house) => house.id === id);
+        if (!houseToCopy) return prev;
+        return [
+          ...prev,
+          { ...houseToCopy, id: newHouseId, name: `House ${newHouseId}` },
+        ];
+      });
+      setNewHouseId((prev) => prev + 1);
+    },
+    [setHouses, newHouseId]
+  );
 
-  const removeHouse = (id) => {
-    setHouses(houses.filter((house) => house.id !== id));
-  };
+  const removeHouse = useCallback(
+    (id) => {
+      setHouses((prev) => prev.filter((house) => house.id !== id));
+    },
+    [setHouses]
+  );
 
   return (
     <div className="w-1/4 bg-gray-100 p-4 max-h-screen overflow-auto">

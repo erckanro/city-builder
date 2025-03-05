@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import HouseControls from "@/components/HouseControls";
 import CityCanvas from "@/components/CityCanvas";
-import { useEffect } from "react";
 
 export default function Home() {
   const [houses, setHouses] = useState([]);
@@ -17,10 +16,12 @@ export default function Home() {
     localStorage.setItem("houses", JSON.stringify(houses));
   }, [houses]);
 
+  const memoizedHouses = useMemo(() => houses, [houses]);
+
   return (
     <div className="flex h-screen">
-      <HouseControls houses={houses} setHouses={setHouses} />
-      <CityCanvas houses={houses} />
+      <HouseControls houses={memoizedHouses} setHouses={setHouses} />
+      <CityCanvas houses={memoizedHouses} />
     </div>
   );
 }
