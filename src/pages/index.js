@@ -1,12 +1,21 @@
 import { useState } from "react";
 import HouseControls from "@/components/HouseControls";
 import CityCanvas from "@/components/CityCanvas";
+import { useEffect } from "react";
 
 export default function Home() {
-  const [houses, setHouses] = useState([
-    { id: 1, name: "House 1", floors: 3, color: "#ff7429" },
-    { id: 2, name: "House 2", floors: 5, color: "#ff0000" },
-  ]);
+  const [houses, setHouses] = useState([]);
+
+  useEffect(() => {
+    const savedHouses = localStorage.getItem("houses");
+    if (savedHouses) {
+      setHouses(JSON.parse(savedHouses));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("houses", JSON.stringify(houses));
+  }, [houses]);
 
   return (
     <div className="flex h-screen">
