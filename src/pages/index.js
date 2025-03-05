@@ -4,8 +4,8 @@ import CityCanvas from "@/components/CityCanvas";
 
 export default function Home() {
   const [houses, setHouses] = useState([
-    { id: 1, name: "House 1", floors: 3, color: "orange" },
-    { id: 2, name: "House 2", floors: 5, color: "red" },
+    { id: 1, name: "House 1", floors: 3, color: "#ff7429" },
+    { id: 2, name: "House 2", floors: 5, color: "#ff0000" },
   ]);
 
   return (
