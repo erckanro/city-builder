@@ -2,10 +2,13 @@ import WeatherWidget from "./WeatherWidget";
 
 export default function CityCanvas({ houses }) {
   return (
-    <div className="flex-1 flex flex-col bg-gray-100 p-4 pb-0">
+    <div className="flex-1 flex flex-col p-4 pb-0 bg-gray-100 p-4 overflow-auto rounded-lg shadow-lg overflow-hidden">
       <WeatherWidget />
 
-      <div className="flex items-end gap-4 p-6 bg-gray-200 flex-1">
+      <div
+        className="flex items-end gap-4 p-6 flex-1 overflow-auto
+"
+      >
         {houses.map((house) => (
           <div key={house.id} className="flex flex-col items-center">
             <div className="relative flex flex-col items-center border-2 border-black">

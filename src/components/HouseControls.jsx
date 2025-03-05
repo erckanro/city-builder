@@ -1,32 +1,12 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function HouseControls({ houses, setHouses }) {
-  const [newHouseId, setNewHouseId] = useState(houses.length + 1);
-
   const updateHouse = useCallback(
-    (id, key, value) => {
+    (id, updates) => {
       setHouses((prev) =>
         prev.map((house) =>
-          house.id === id ? { ...house, [key]: value } : house
-        )
-      );
-    },
-    [setHouses]
-  );
-
-  const updateFloorColor = useCallback(
-    (id, floorIndex, color) => {
-      setHouses((prev) =>
-        prev.map((house) =>
-          house.id === id
-            ? {
-                ...house,
-                floorColors: house.floorColors.map((c, i) =>
-                  i === floorIndex ? color : c
-                ),
-              }
-            : house
+          house.id === id ? { ...house, ...updates } : house
         )
       );
     },
@@ -34,32 +14,22 @@ export default function HouseControls({ houses, setHouses }) {
   );
 
   const handleFloorChange = useCallback(
-    (id, newFloors) => {
-      setHouses((prev) =>
-        prev.map((house) => {
-          if (house.id !== id) return house;
+    (id, newFloors, currentColors) => {
+      let updatedFloorColors = [...currentColors];
 
-          let updatedFloorColors = [...house.floorColors];
+      if (newFloors > currentColors.length) {
+        while (updatedFloorColors.length < newFloors) {
+          updatedFloorColors.unshift("#808080");
+        }
+      } else {
+        updatedFloorColors = updatedFloorColors.slice(
+          updatedFloorColors.length - newFloors
+        );
+      }
 
-          if (newFloors > house.floors) {
-            while (updatedFloorColors.length < newFloors) {
-              updatedFloorColors.unshift("#808080");
-            }
-          } else {
-            updatedFloorColors = updatedFloorColors.slice(
-              updatedFloorColors.length - newFloors
-            );
-          }
-
-          return {
-            ...house,
-            floors: newFloors,
-            floorColors: updatedFloorColors,
-          };
-        })
-      );
+      updateHouse(id, { floors: newFloors, floorColors: updatedFloorColors });
     },
-    [setHouses]
+    [updateHouse]
   );
 
   const addHouse = useCallback(() => {
@@ -68,7 +38,7 @@ export default function HouseControls({ houses, setHouses }) {
       return [
         ...prev,
         {
-          id: id,
+          id,
           name: `House ${id}`,
           floors: 3,
           floorColors: ["#808080", "#808080", "#808080"],
@@ -102,7 +72,7 @@ export default function HouseControls({ houses, setHouses }) {
   );
 
   return (
-    <div className="w-full sm:w-1/2 lg:w-1/4 bg-gray-100 p-4 max-h-screen overflow-auto rounded-lg shadow-lg">
+    <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold text-black">House List</h2>
         <motion.button
@@ -124,27 +94,57 @@ export default function HouseControls({ houses, setHouses }) {
             transition={{ duration: 0.3 }}
             className="p-4 border rounded-md my-2 bg-white text-gray-600 shadow-md"
           >
-            <label className="text-sm text-black">Name:</label>
-            <input
-              type="text"
-              value={house.name}
-              onChange={(e) => updateHouse(house.id, "name", e.target.value)}
-              className="rounded bg-gray-50 border text-gray-900 block w-full text-sm p-2"
-            />
+            <div className="flex">
+              <input
+                className="appearance-none bg-transparent w-full text-gray-700 mr-3 py-1 pr-2 border-b-1 focus:outline-none"
+                value={house.name}
+                onChange={(e) =>
+                  updateHouse(house.id, { name: e.target.value })
+                }
+                type="text"
+                placeholder="Enter House Name"
+              />
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => removeHouse(house.id)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-8 text-red-600 cursor-pointer"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                  />
+                </svg>
+              </motion.button>
+            </div>
 
-            <label className="text-sm text-black mt-2">
-              Floors: {house.floors}
-            </label>
-            <input
-              type="range"
-              min="1"
-              max="10"
-              value={house.floors}
-              onChange={(e) =>
-                handleFloorChange(house.id, Number(e.target.value))
-              }
-              className="w-full"
-            />
+            <div className="flex">
+              <label className=" text-sm text-black mt-2">
+                Floors: {house.floors}
+              </label>
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={house.floors}
+                onChange={(e) =>
+                  handleFloorChange(
+                    house.id,
+                    Number(e.target.value),
+                    house.floorColors
+                  )
+                }
+                className="w-full"
+              />
+            </div>
 
             <label className="text-sm text-black mt-2">Floor Colors:</label>
             {house.floorColors.map((color, index) => (
@@ -154,13 +154,17 @@ export default function HouseControls({ houses, setHouses }) {
                   type="color"
                   value={color}
                   onChange={(e) =>
-                    updateFloorColor(house.id, index, e.target.value)
+                    updateHouse(house.id, {
+                      floorColors: house.floorColors.map((c, i) =>
+                        i === index ? e.target.value : c
+                      ),
+                    })
                   }
                   className="w-10 h-10 rounded cursor-pointer"
                 />
               </div>
             ))}
-            <div className="flex justify-between mt-3">
+            <div className="flex justify-center mt-3">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -169,18 +173,10 @@ export default function HouseControls({ houses, setHouses }) {
               >
                 Duplicate
               </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => removeHouse(house.id)}
-                className="bg-red-500 text-white px-3 py-1 text-sm rounded-lg"
-              >
-                Remove
-              </motion.button>
             </div>
           </motion.div>
         ))}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
