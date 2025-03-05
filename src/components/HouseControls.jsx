@@ -1,17 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function HouseControls({ houses, setHouses }) {
   const [newHouseId, setNewHouseId] = useState(houses.length + 1);
-  const [prevFloors, setPrevFloors] = useState({});
-
-  useEffect(() => {
-    const initialFloors = {};
-    houses.forEach((house) => {
-      initialFloors[house.id] = house.floors;
-    });
-    setPrevFloors(initialFloors);
-  }, [houses]);
 
   const updateHouse = useCallback(
     (id, key, value) => {
@@ -24,6 +15,53 @@ export default function HouseControls({ houses, setHouses }) {
     [setHouses]
   );
 
+  const updateFloorColor = useCallback(
+    (id, floorIndex, color) => {
+      setHouses((prev) =>
+        prev.map((house) =>
+          house.id === id
+            ? {
+                ...house,
+                floorColors: house.floorColors.map((c, i) =>
+                  i === floorIndex ? color : c
+                ),
+              }
+            : house
+        )
+      );
+    },
+    [setHouses]
+  );
+
+  const handleFloorChange = useCallback(
+    (id, newFloors) => {
+      setHouses((prev) =>
+        prev.map((house) => {
+          if (house.id !== id) return house;
+
+          let updatedFloorColors = [...house.floorColors];
+
+          if (newFloors > house.floors) {
+            while (updatedFloorColors.length < newFloors) {
+              updatedFloorColors.unshift("#808080");
+            }
+          } else {
+            updatedFloorColors = updatedFloorColors.slice(
+              updatedFloorColors.length - newFloors
+            );
+          }
+
+          return {
+            ...house,
+            floors: newFloors,
+            floorColors: updatedFloorColors,
+          };
+        })
+      );
+    },
+    [setHouses]
+  );
+
   const addHouse = useCallback(() => {
     setHouses((prev) => [
       ...prev,
@@ -31,7 +69,7 @@ export default function HouseControls({ houses, setHouses }) {
         id: newHouseId,
         name: `House ${newHouseId}`,
         floors: 3,
-        color: "#808080",
+        floorColors: ["#808080", "#808080", "#808080"],
       },
     ]);
     setNewHouseId((prev) => prev + 1);
@@ -67,20 +105,9 @@ export default function HouseControls({ houses, setHouses }) {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={addHouse}
-          className="bg-green-600 text-white p-2 rounded-lg flex items-center gap-1"
+          className="bg-green-600 text-white p-2 rounded-lg"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              fillRule="evenodd"
-              d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
-              clipRule="evenodd"
-            />
-          </svg>
+          + Add House
         </motion.button>
       </div>
 
@@ -89,16 +116,8 @@ export default function HouseControls({ houses, setHouses }) {
           <motion.div
             key={house.id}
             initial={{ opacity: 0, y: 10 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale:
-                prevFloors[house.id] !== undefined &&
-                prevFloors[house.id] < house.floors
-                  ? [1, 1.1, 1]
-                  : 1,
-            }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
             className="p-4 border rounded-md my-2 bg-white text-gray-600 shadow-md"
           >
             <label className="text-sm text-black">Name:</label>
@@ -106,32 +125,37 @@ export default function HouseControls({ houses, setHouses }) {
               type="text"
               value={house.name}
               onChange={(e) => updateHouse(house.id, "name", e.target.value)}
-              className="rounded bg-gray-50 border text-gray-900 focus:border-blue-700 block w-full text-sm border-gray-300 p-2"
+              className="rounded bg-gray-50 border text-gray-900 block w-full text-sm p-2"
             />
 
-            <label className="text-sm text-black mt-2">Color:</label>
-            <div className="flex items-center gap-2 my-2">
-              <input
-                type="color"
-                value={house.color}
-                onChange={(e) => updateHouse(house.id, "color", e.target.value)}
-                className="w-10 h-10 border rounded cursor-pointer"
-              />
-              <span className="text-sm">{house.color}</span>
-            </div>
-
-            <label className="text-sm text-black">Floors: {house.floors}</label>
+            <label className="text-sm text-black mt-2">
+              Floors: {house.floors}
+            </label>
             <input
               type="range"
               min="1"
               max="10"
               value={house.floors}
               onChange={(e) =>
-                updateHouse(house.id, "floors", Number(e.target.value))
+                handleFloorChange(house.id, Number(e.target.value))
               }
               className="w-full"
             />
 
+            <label className="text-sm text-black mt-2">Floor Colors:</label>
+            {house.floorColors.map((color, index) => (
+              <div key={index} className="flex items-center gap-2 my-2">
+                <span className="text-sm">Floor {house.floors - index}</span>
+                <input
+                  type="color"
+                  value={color}
+                  onChange={(e) =>
+                    updateFloorColor(house.id, index, e.target.value)
+                  }
+                  className="w-10 h-10 rounded cursor-pointer"
+                />
+              </div>
+            ))}
             <div className="flex justify-between mt-3">
               <motion.button
                 whileHover={{ scale: 1.1 }}
