@@ -63,31 +63,35 @@ export default function HouseControls({ houses, setHouses }) {
   );
 
   const addHouse = useCallback(() => {
-    setHouses((prev) => [
-      ...prev,
-      {
-        id: newHouseId,
-        name: `House ${newHouseId}`,
-        floors: 3,
-        floorColors: ["#808080", "#808080", "#808080"],
-      },
-    ]);
-    setNewHouseId((prev) => prev + 1);
-  }, [setHouses, newHouseId]);
+    setHouses((prev) => {
+      const id = prev.length ? Math.max(...prev.map((h) => h.id)) + 1 : 1;
+      return [
+        ...prev,
+        {
+          id: id,
+          name: `House ${id}`,
+          floors: 3,
+          floorColors: ["#808080", "#808080", "#808080"],
+        },
+      ];
+    });
+  }, [setHouses]);
 
   const duplicateHouse = useCallback(
     (id) => {
       setHouses((prev) => {
         const houseToCopy = prev.find((house) => house.id === id);
         if (!houseToCopy) return prev;
+
+        const nextId = prev.length ? Math.max(...prev.map((h) => h.id)) + 1 : 1;
+
         return [
           ...prev,
-          { ...houseToCopy, id: newHouseId, name: `House ${newHouseId}` },
+          { ...houseToCopy, id: nextId, name: `House ${nextId}` },
         ];
       });
-      setNewHouseId((prev) => prev + 1);
     },
-    [setHouses, newHouseId]
+    [setHouses]
   );
 
   const removeHouse = useCallback(
