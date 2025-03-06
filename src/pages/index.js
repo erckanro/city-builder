@@ -3,10 +3,12 @@ import HouseControls from "@/components/HouseControls";
 import CityCanvas from "@/components/CityCanvas";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import Modal from "@/components/Modal";
 
 export default function Home() {
   const [houses, setHouses] = useState([]);
   const [isMobileControlsOpen, setIsMobileControlsOpen] = useState(false);
+  const [houseToDelete, setHouseToDelete] = useState(null);
 
   useEffect(() => {
     const savedHouses = localStorage.getItem("houses");
@@ -20,6 +22,15 @@ export default function Home() {
   }, [houses]);
 
   const memoizedHouses = useMemo(() => houses, [houses]);
+
+  const removeHouse = () => {
+    if (houseToDelete) {
+      setHouses((prev) =>
+        prev.filter((house) => house.id !== houseToDelete.id)
+      );
+      setHouseToDelete(null);
+    }
+  };
 
   return (
     <div className="bg-gray-200 p-1 min-h-screen flex flex-col">
@@ -40,12 +51,20 @@ export default function Home() {
             houses={memoizedHouses}
             setHouses={setHouses}
             setIsMobileControlsOpen={setIsMobileControlsOpen}
+            setHouseToDelete={setHouseToDelete}
           />
         </div>
 
         <CityCanvas houses={memoizedHouses} />
       </div>
       <Footer />
+
+      <Modal
+        isOpen={!!houseToDelete}
+        onClose={() => setHouseToDelete(null)}
+        onConfirm={removeHouse}
+        house={houseToDelete}
+      />
     </div>
   );
 }

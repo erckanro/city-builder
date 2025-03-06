@@ -1,10 +1,11 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function HouseControls({
   houses,
   setHouses,
   setIsMobileControlsOpen,
+  setHouseToDelete,
 }) {
   const updateHouse = useCallback(
     (id, updates) => {
@@ -68,12 +69,9 @@ export default function HouseControls({
     [setHouses]
   );
 
-  const removeHouse = useCallback(
-    (id) => {
-      setHouses((prev) => prev.filter((house) => house.id !== id));
-    },
-    [setHouses]
-  );
+  const confirmDelete = (house) => {
+    setHouseToDelete(house);
+  };
 
   return (
     <>
@@ -151,7 +149,7 @@ export default function HouseControls({
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => removeHouse(house.id)}
+                    onClick={() => confirmDelete(house)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
