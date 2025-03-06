@@ -127,120 +127,153 @@ export default function HouseControls({
           </motion.button>
         </div>
       </div>
-
-      <AnimatePresence>
-        {houses.map((house) => (
-          <motion.div
-            key={house.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="p-4 border border-gray-300 rounded-xl my-2 bg-white text-gray-600 shadow-lg"
-          >
-            <div className="flex">
-              <input
-                className="appearance-none bg-transparent w-full text-gray-700 mr-3 py-1 pr-2 border-b-1 focus:outline-none"
-                value={house.name}
-                onChange={(e) =>
-                  updateHouse(house.id, { name: e.target.value })
-                }
-                type="text"
-                placeholder="Enter House Name"
-              />
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => removeHouse(house.id)}
+      <div>
+        {houses.length !== 0 ? (
+          <AnimatePresence>
+            {houses.map((house) => (
+              <motion.div
+                key={house.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="p-4 border border-gray-300 rounded-xl my-2 bg-white text-gray-600 shadow-lg"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-8 text-red-600 cursor-pointer"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
-              </motion.button>
-            </div>
-
-            <div className="flex gap-2 mt-4">
-              <label className="whitespace-nowrap text-sm text-black">
-                Floors: {house.floors}
-              </label>
-              <input
-                type="range"
-                min="1"
-                max="10"
-                value={house.floors}
-                onChange={(e) =>
-                  handleFloorChange(
-                    house.id,
-                    Number(e.target.value),
-                    house.floorColors
-                  )
-                }
-                className="w-full"
-              />
-            </div>
-
-            <div className="mt-2">
-              <label className="text-sm text-gray-500">
-                Adjust floor color below:
-              </label>
-              {house.floorColors.map((color, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <span className="text-xs whitespace-nowrap">
-                    Floor {house.floors - index}
-                  </span>
+                <div className="flex">
                   <input
-                    type="color"
-                    value={color}
+                    className="appearance-none bg-transparent w-full text-gray-700 mr-3 py-1 pr-2 border-b-1 focus:outline-none"
+                    value={house.name}
                     onChange={(e) =>
-                      updateHouse(house.id, {
-                        floorColors: house.floorColors.map((c, i) =>
-                          i === index ? e.target.value : c
-                        ),
-                      })
+                      updateHouse(house.id, { name: e.target.value })
                     }
-                    className="w-full h-10 rounded cursor-pointer"
+                    type="text"
+                    placeholder="Enter House Name"
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => removeHouse(house.id)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-8 text-red-600 cursor-pointer"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                      />
+                    </svg>
+                  </motion.button>
+                </div>
+
+                <div className="flex gap-2 mt-4">
+                  <label className="whitespace-nowrap text-sm text-black">
+                    Floors: {house.floors}
+                  </label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={house.floors}
+                    onChange={(e) =>
+                      handleFloorChange(
+                        house.id,
+                        Number(e.target.value),
+                        house.floorColors
+                      )
+                    }
+                    className="w-full"
                   />
                 </div>
-              ))}
-            </div>
 
-            <div className="flex justify-center mt-3 pt-3 border-t-1 border-gray-400">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => duplicateHouse(house.id)}
-                className="bg-sky-600 text-white py-2 px-3 rounded-lg flex text-sm gap-1 items-center"
+                <div className="mt-2">
+                  <label className="text-sm text-gray-500">
+                    Adjust floor color below:
+                  </label>
+                  {house.floorColors.map((color, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <span className="text-xs whitespace-nowrap">
+                        Floor {house.floors - index}
+                      </span>
+                      <input
+                        type="color"
+                        value={color}
+                        onChange={(e) =>
+                          updateHouse(house.id, {
+                            floorColors: house.floorColors.map((c, i) =>
+                              i === index ? e.target.value : c
+                            ),
+                          })
+                        }
+                        className="w-full h-10 rounded cursor-pointer"
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex justify-center mt-3 pt-3 border-t-1 border-gray-400">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => duplicateHouse(house.id)}
+                    className="bg-sky-600 text-white py-2 px-3 rounded-lg flex text-sm gap-1 items-center"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+                      />
+                    </svg>
+                    Duplicate
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        ) : (
+          <div className="text-center top-20 relative">
+            <div className="flex gap-2 items-center justify-center text-black">
+              <h2 className="text-lg font-bold">No Data</h2>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="size-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
-                  />
-                </svg>
-                Duplicate
-              </motion.button>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+                />
+              </svg>
             </div>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+            <div className="text-gray-700">
+              Please
+              <span
+                onClick={addHouse}
+                className="cursor-pointer text-green-600 px-1.5"
+              >
+                Add New
+              </span>
+              House to begin
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }
