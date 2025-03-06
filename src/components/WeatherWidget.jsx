@@ -1,34 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import { useWeather } from "@/hooks/useWeather";
 
 export default function WeatherWidget() {
-  const [city, setCity] = useState("New York");
-  const [loading, setLoading] = useState(false);
-  const [weather, setWeather] = useState({
-    temp: 0,
-    maxTemp: 0,
-    minTemp: 0,
-    condition: "Clear",
-    windSpeed: 0,
-    visibility: 0,
-    icon: "01d",
-  });
-
-  const fetchWeather = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`/api/weather?city=${city}`);
-      setWeather(response.data);
-    } catch (error) {
-      console.error("Failed to fetch weather:", error);
-    } finally {
-      setLoading(false); // End loading
-    }
-  }, [city]);
-
-  useEffect(() => {
-    fetchWeather();
-  }, [fetchWeather]);
+  const { city, setCity, weather, loading } = useWeather();
 
   const getBackgroundClass = () => {
     switch (weather.condition) {

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function HouseControls({

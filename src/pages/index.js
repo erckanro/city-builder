@@ -4,22 +4,12 @@ import CityCanvas from "@/components/CityCanvas";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Modal from "@/components/Modal";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export default function Home() {
-  const [houses, setHouses] = useState([]);
+  const [houses, setHouses] = useLocalStorage("houses", []);
   const [isMobileControlsOpen, setIsMobileControlsOpen] = useState(false);
   const [houseToDelete, setHouseToDelete] = useState(null);
-
-  useEffect(() => {
-    const savedHouses = localStorage.getItem("houses");
-    if (savedHouses) {
-      setHouses(JSON.parse(savedHouses));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("houses", JSON.stringify(houses));
-  }, [houses]);
 
   const memoizedHouses = useMemo(() => houses, [houses]);
 
@@ -39,13 +29,12 @@ export default function Home() {
         <div
           className={`bg-gray-100 p-3 overflow-auto rounded-lg shadow-xl transition-transform duration-300
             sm:relative sm:w-1/2 lg:w-1/4 sm:block 
-            fixed inset-y-0 left-0 w-4/4 max-w-xs z-50 
+            fixed inset-y-0 left-0 w-4/4 max-w-xs z-50 max-h-full
             ${
               isMobileControlsOpen
                 ? "translate-x-0"
                 : "-translate-x-full sm:translate-x-0"
             }`}
-          style={{ maxHeight: "100%" }}
         >
           <HouseControls
             houses={memoizedHouses}
