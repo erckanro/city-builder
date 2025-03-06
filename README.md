@@ -1,4 +1,4 @@
-# 🏙️ City Builder
+#City Builder
 
 ## Overview
 
@@ -6,10 +6,10 @@ City Builder is an interactive application where users can create and manage a c
 
 ## **Features**
 
-✅ Customize houses: Adjust name of house, number of floors, and colors.  
-✅ Manage houses: Add, duplicate, or remove houses dynamically.  
-✅ Display weather: Shows weather conditions for a selected location.  
-✅ Local storage: Saves houses persistently across sessions.
+-Customize houses: Adjust name of house, number of floors, and colors.  
+-Manage houses: Add, duplicate, or remove houses dynamically.  
+-Display weather: Shows weather conditions for a selected location.  
+-Local storage: Saves houses persistently across sessions.
 
 ## **Tech Stack**
 
@@ -23,7 +23,7 @@ City Builder is an interactive application where users can create and manage a c
 
 ## **Setup Instructions**
 
-### 1️⃣ **Clone the Repository**
+### 1 **Clone the Repository**
 
 ```sh
 git clone <repository-url>
