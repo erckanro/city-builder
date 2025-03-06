@@ -26,7 +26,7 @@ City Builder is an interactive application where users can create and manage a c
 ### 1 **Clone the Repository**
 
 ```sh
-git clone <repository-url>
+git clone git@github.com:erckanro/city-builder.git
 cd city-builder
 ```
 
