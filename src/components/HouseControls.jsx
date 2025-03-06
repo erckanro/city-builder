@@ -1,7 +1,11 @@
 import { useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function HouseControls({ houses, setHouses }) {
+export default function HouseControls({
+  houses,
+  setHouses,
+  setIsMobileControlsOpen,
+}) {
   const updateHouse = useCallback(
     (id, updates) => {
       setHouses((prev) =>
@@ -75,14 +79,53 @@ export default function HouseControls({ houses, setHouses }) {
     <>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold text-black">House List</h2>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={addHouse}
-          className="bg-green-600 text-white p-2 rounded-lg"
-        >
-          + Add House
-        </motion.button>
+
+        <div className="flex gap-2">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={addHouse}
+            className="bg-green-600 text-white p-2 px-3 rounded-lg flex text-sm gap-1 items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            Add New
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsMobileControlsOpen(false)}
+            className="bg-gray-300 text-gray-700 p-2 rounded-lg sm:hidden"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </motion.button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -92,7 +135,7 @@ export default function HouseControls({ houses, setHouses }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="p-4 border rounded-md my-2 bg-white text-gray-600 shadow-md"
+            className="p-4 border border-gray-300 rounded-xl my-2 bg-white text-gray-600 shadow-lg"
           >
             <div className="flex">
               <input
@@ -126,8 +169,8 @@ export default function HouseControls({ houses, setHouses }) {
               </motion.button>
             </div>
 
-            <div className="flex">
-              <label className=" text-sm text-black mt-2">
+            <div className="flex gap-2 mt-4">
+              <label className="whitespace-nowrap text-sm text-black">
                 Floors: {house.floors}
               </label>
               <input
@@ -146,31 +189,52 @@ export default function HouseControls({ houses, setHouses }) {
               />
             </div>
 
-            <label className="text-sm text-black mt-2">Floor Colors:</label>
-            {house.floorColors.map((color, index) => (
-              <div key={index} className="flex items-center gap-2 my-2">
-                <span className="text-sm">Floor {house.floors - index}</span>
-                <input
-                  type="color"
-                  value={color}
-                  onChange={(e) =>
-                    updateHouse(house.id, {
-                      floorColors: house.floorColors.map((c, i) =>
-                        i === index ? e.target.value : c
-                      ),
-                    })
-                  }
-                  className="w-10 h-10 rounded cursor-pointer"
-                />
-              </div>
-            ))}
-            <div className="flex justify-center mt-3">
+            <div className="mt-2">
+              <label className="text-sm text-gray-500">
+                Adjust floor color below:
+              </label>
+              {house.floorColors.map((color, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <span className="text-xs whitespace-nowrap">
+                    Floor {house.floors - index}
+                  </span>
+                  <input
+                    type="color"
+                    value={color}
+                    onChange={(e) =>
+                      updateHouse(house.id, {
+                        floorColors: house.floorColors.map((c, i) =>
+                          i === index ? e.target.value : c
+                        ),
+                      })
+                    }
+                    className="w-full h-10 rounded cursor-pointer"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-3 pt-3 border-t-1 border-gray-400">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => duplicateHouse(house.id)}
-                className="bg-blue-500 text-white px-3 py-1 text-sm rounded-lg"
+                className="bg-sky-600 text-white py-2 px-3 rounded-lg flex text-sm gap-1 items-center"
               >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-4"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+                  />
+                </svg>
                 Duplicate
               </motion.button>
             </div>

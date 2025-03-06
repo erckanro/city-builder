@@ -2,7 +2,7 @@ import WeatherWidget from "./WeatherWidget";
 
 export default function CityCanvas({ houses }) {
   return (
-    <div className="flex-1 flex flex-col p-4 pb-0 bg-gray-100 p-4 overflow-auto rounded-lg shadow-lg overflow-hidden">
+    <div className="flex-1 flex flex-col p-4 pb-0 bg-gray-100 p-4 overflow-auto rounded-lg shadow-2xl overflow-hidden">
       <WeatherWidget />
 
       <div

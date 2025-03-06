@@ -22,40 +22,25 @@ export default function Home() {
   const memoizedHouses = useMemo(() => houses, [houses]);
 
   return (
-    <div className="bg-gray-300 p-1">
+    <div className="bg-gray-200 p-1 min-h-screen flex flex-col">
       <Header setIsMobileControlsOpen={setIsMobileControlsOpen} />
       <div className="flex h-screen gap-2 p-1">
         <div
-          className={`bg-gray-100 p-3 overflow-auto rounded-lg shadow-lg transition-transform duration-300
-        sm:relative sm:w-1/2 lg:w-1/4 sm:block 
-        fixed inset-y-0 left-0 w-3/4 max-w-xs z-50 
-        ${
-          isMobileControlsOpen
-            ? "translate-x-0 overflow-visible"
-            : "-translate-x-full sm:translate-x-0"
-        }`}
+          className={`bg-gray-100 p-3 overflow-auto rounded-lg shadow-xl transition-transform duration-300
+            sm:relative sm:w-1/2 lg:w-1/4 sm:block 
+            fixed inset-y-0 left-0 w-4/4 max-w-xs z-50 
+            ${
+              isMobileControlsOpen
+                ? "translate-x-0"
+                : "-translate-x-full sm:translate-x-0"
+            }`}
+          style={{ maxHeight: "100%" }}
         >
-          <HouseControls houses={memoizedHouses} setHouses={setHouses} />
-
-          <button
-            onClick={() => setIsMobileControlsOpen(false)}
-            className="absolute top-3 -right-7 pl-8 -z-1 bg-gray-100 text-red p-3 rounded-full sm:hidden"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6 text-gray-900"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5 8.25 12l7.5-7.5"
-              />
-            </svg>
-          </button>
+          <HouseControls
+            houses={memoizedHouses}
+            setHouses={setHouses}
+            setIsMobileControlsOpen={setIsMobileControlsOpen}
+          />
         </div>
 
         <CityCanvas houses={memoizedHouses} />

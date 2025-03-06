@@ -1,6 +1,6 @@
 export default function Header({ setIsMobileControlsOpen }) {
   return (
-    <header className="flex flex-row-reverse items-center place-content-start rounded-lg m-1 py-2 lg:p-4 bg-gray-100 text-red-700 text-lg font-bold shadow-md">
+    <header className="flex flex-row-reverse items-center place-content-start rounded-lg m-1 py-2 lg:p-4 bg-gray-100 text-red-700 text-lg font-bold shadow-xl">
       <h1 className="text-xl font-bold">City Builder</h1>
       <button
         onClick={() => setIsMobileControlsOpen((prev) => !prev)}
